@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ConnectHub — Social Media Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#6c63ff;--p2:#574fd6;--pa:rgba(108,99,255,.1);
+  --bg:#f0f2f5;--surface:#fff;--bd:#e4e6eb;
+  --tx:#1c1e21;--mt:#65676b;--mt2:#b0b3b8;
+  --gn:#31a24c;--rd:#f3425f;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.05);
+  --shl:0 4px 20px rgba(0,0,0,.12);
+  --r:12px;--rs:8px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;line-height:1.5}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#ccc;border-radius:8px}
+.hidden{display:none!important}
+/* BUTTONS */
+.btn{padding:8px 16px;border-radius:var(--rs);border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:13px;transition:all .18s;display:inline-flex;align-items:center;gap:5px}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--p2)}
+.btn-o{background:transparent;color:var(--p);border:1.5px solid var(--p)}.btn-o:hover{background:var(--pa)}
+.btn-gray{background:#e4e6eb;color:var(--tx)}.btn-gray:hover{background:#d8dadf}
+.btn-red{background:var(--rd);color:#fff}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-fw{width:100%;justify-content:center}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+/* INPUTS */
+.inp{border:1.5px solid var(--bd);border-radius:var(--rs);padding:9px 13px;font-family:inherit;font-size:14px;width:100%;outline:none;transition:border-color .2s;background:#fff;color:var(--tx)}
+.inp:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(108,99,255,.1)}
+.inp::placeholder{color:var(--mt2)}
+.inp-bg{background:#f0f2f5;border-color:transparent}
+.inp-bg:focus{background:#fff;border-color:var(--p)}
+textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
+/* NAVBAR */
+.navbar{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.1);position:sticky;top:0;z-index:300;height:56px;display:flex;align-items:center;padding:0 16px;gap:10px}
+.logo{font-size:20px;font-weight:800;color:var(--p);cursor:pointer;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.logo-dot{width:28px;height:28px;background:var(--p);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800}
+.nsearch{flex:1;max-width:280px;position:relative}
+.nsearch input{padding-left:34px;border-radius:20px}
+.nsi{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--mt);font-size:14px;pointer-events:none}
+.sdrop{position:absolute;top:calc(100%+6px);left:0;right:0;background:#fff;border-radius:var(--r);box-shadow:var(--shl);z-index:400;border:1px solid var(--bd);overflow:hidden}
+.sitem{padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;border-bottom:1px solid var(--bd)}.sitem:last-child{border-bottom:none}.sitem:hover{background:var(--bg)}
+.nav-tabs{flex:1;display:flex;justify-content:center;gap:3px}
+.nav-tab{padding:7px 16px;border-radius:var(--rs);border:none;background:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--mt);font-family:inherit;transition:all .15s}.nav-tab:hover{background:var(--bg);color:var(--tx)}.nav-tab.active{background:var(--p);color:#fff}
+.nav-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.icon-btn{background:var(--bg);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s;position:relative}.icon-btn:hover{background:var(--bd)}
+.ndot{position:absolute;top:2px;right:2px;width:10px;height:10px;border-radius:50%;background:var(--rd);border:2px solid #fff}
+/* LAYOUT */
+.layout{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:238px 1fr 286px;gap:18px;padding:18px 14px;align-items:start}
+/* SIDEBARS */
+.lside,.rside{position:sticky;top:72px}
+.scard{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:12px;margin-bottom:12px}
+.suser{display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--rs);cursor:pointer;margin-bottom:6px;transition:background .15s}.suser:hover{background:var(--bg)}
+.nl{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--rs);cursor:pointer;font-size:14px;font-weight:500;transition:all .15s;color:var(--tx);border:none;background:none;width:100%;font-family:inherit}.nl:hover{background:var(--bg);color:var(--p)}.nl.active{background:var(--pa);color:var(--p);font-weight:700}
+/* AV */
+.av{border-radius:50%;flex-shrink:0;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;overflow:hidden;cursor:pointer}
+/* POST CARDS */
+.pcard{background:#fff;border-radius:var(--r);box-shadow:var(--sh);margin-bottom:14px;overflow:hidden}
+.ph{display:flex;align-items:flex-start;gap:10px;padding:13px 15px 8px}
+.pm{flex:1;min-width:0}
+.pa{font-size:14px;font-weight:700;cursor:pointer}.pa:hover{text-decoration:underline}
+.pt{font-size:12px;color:var(--mt);margin-top:1px}
+.pb{padding:0 15px 10px;font-size:15px;line-height:1.65;word-break:break-word}
+.htag{color:var(--p);font-weight:600;cursor:pointer}.htag:hover{text-decoration:underline}
+.pimg{width:100%;max-height:480px;object-fit:cover;cursor:pointer;display:block}
+.pst{display:flex;justify-content:space-between;padding:7px 15px;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);font-size:12px;color:var(--mt)}
+.psl{cursor:pointer}.psl:hover{text-decoration:underline}
+.pax{display:flex;padding:3px 8px}
+.pab{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:7px;border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;color:var(--mt);border:none;background:none;font-family:inherit;transition:all .15s}.pab:hover{background:var(--bg);color:var(--p)}.pab.liked{color:var(--rd)}.pab.saved{color:var(--p)}
+/* CREATE BOX */
+.cbox{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:14px;margin-bottom:14px}
+.cinp{width:100%;border:none;background:var(--bg);border-radius:20px;padding:10px 16px;font-size:14px;font-family:inherit;outline:none;resize:none;line-height:1.5;color:var(--tx);transition:all .2s}
+.cinp:focus{background:#fff;border:1.5px solid var(--p);border-radius:var(--rs);padding:10px 14px}
+.cbar{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
+/* COMMENTS */
+.cmrow{display:flex;gap:8px;padding:5px 0}
+.cmbub{background:var(--bg);border-radius:0 var(--r) var(--r) var(--r);padding:8px 12px;flex:1}
+.cmname{font-size:12px;font-weight:700;margin-bottom:2px}
+.cmtxt{font-size:14px}
+.cmmeta{display:flex;gap:10px;margin-top:3px;padding-left:4px;font-size:11px;color:var(--mt)}
+.cmmeta span{cursor:pointer}.cmmeta span:hover{color:var(--rd)}
+/* PROFILE */
+.pcov{height:190px;background:linear-gradient(135deg,var(--p),#a78bfa);border-radius:var(--r) var(--r) 0 0;position:relative}
+.pavwrap{position:absolute;bottom:-38px;left:20px}
+.pavbig{width:80px;height:80px;font-size:30px;border:4px solid #fff}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.pgitem{aspect-ratio:1;overflow:hidden;cursor:pointer;position:relative;background:var(--bg)}.pgitem:hover .pgo{opacity:1}
+.pgimg{width:100%;height:100%;object-fit:cover}
+.pgtxt{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:6px;font-size:11px;color:var(--mt);text-align:center;overflow:hidden}
+.pgo{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;gap:10px;color:#fff;font-size:12px;font-weight:700;opacity:0;transition:opacity .18s}
+/* TREND */
+.tcard{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:13px;margin-bottom:12px}
+.ttitle{font-size:14px;font-weight:700;margin-bottom:10px}
+.ti{padding:7px 0;border-bottom:1px solid var(--bd);cursor:pointer}.ti:last-child{border-bottom:none}
+.ti:hover .htag{text-decoration:underline}
+.tc{font-size:11px;color:var(--mt);margin-top:1px}
+.sugitem{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd)}.sugitem:last-child{border-bottom:none}
+/* AUTH MODAL */
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:var(--shl);animation:mIn .2s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.mhead{padding:15px 19px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.mhead h3{font-size:17px;font-weight:800}
+.mclose{background:none;border:none;font-size:22px;cursor:pointer;color:var(--mt);line-height:1}.mclose:hover{color:var(--tx)}
+.mbody{padding:17px 19px}
+.frow{margin-bottom:11px}
+.frow label{display:block;font-size:12px;font-weight:700;color:var(--mt);margin-bottom:4px}
+.atabs{display:flex;gap:2px;background:var(--bg);border-radius:var(--rs);padding:4px;margin-bottom:15px}
+.atab{flex:1;text-align:center;padding:7px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:var(--mt);transition:all .15s}.atab.active{background:#fff;color:var(--p);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#1c1e21;color:#fff;border-radius:var(--r);padding:11px 18px;font-size:14px;font-weight:500;box-shadow:var(--shl);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:9999;white-space:nowrap;max-width:320px;display:flex;align-items:center;gap:8px}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast.success{background:#155724;border-left:3px solid var(--gn)}
+#toast.error{background:#721c24;border-left:3px solid var(--rd)}
+#toast.info{border-left:3px solid var(--p)}
+.spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.loader{text-align:center;padding:50px;color:var(--mt);font-size:14px}
+.errbox{background:rgba(243,66,95,.08);border:1px solid rgba(243,66,95,.25);border-radius:var(--rs);padding:9px 12px;color:var(--rd);font-size:13px;margin-bottom:10px}
+.empty{text-align:center;padding:44px 20px;color:var(--mt)}
+.vi{color:#1877f2;font-size:12px}
+/* IMG PREVIEW */
+.ipwrap{position:relative;margin-top:9px;border-radius:var(--rs);overflow:hidden;max-height:200px}.ipwrap img{width:100%;object-fit:cover;max-height:200px}
+.iprm{position:absolute;top:7px;right:7px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+/* PEOPLE PAGE */
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.pple-card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:18px;text-align:center;cursor:pointer;transition:box-shadow .2s}.pple-card:hover{box-shadow:var(--shl)}
+/* RESPONSIVE */
+@media(max-width:980px){.layout{grid-template-columns:1fr}.lside,.rside{display:none}}
+@media(max-width:560px){.navbar{padding:0 10px}.nav-tabs{display:none}.layout{padding:10px}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo" onclick="gp('explore')">
+    <div class="logo-dot">C</div>ConnectHub
+  </div>
+  <div class="nsearch">
+    <span class="nsi">🔍</span>
+    <input class="inp inp-bg" type="text" id="gi" placeholder="Search…" oninput="hsearch()" autocomplete="off">
+    <div class="sdrop hidden" id="sdrop"></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab" id="t-feed"    onclick="sw('feed')">🏠 Feed</button>
+    <button class="nav-tab active" id="t-explore" onclick="sw('explore')">🔥 Explore</button>
+    <button class="nav-tab" id="t-people"  onclick="sw('people')">👥 People</button>
+  </div>
+  <div class="nav-right">
+    <div class="icon-btn" onclick="gp('notifications')">🔔<div class="ndot hidden" id="ndot"></div></div>
+    <div id="nav-user"></div>
+  </div>
+</nav>
+
+<div id="app"><div class="loader">Loading…</div></div>
+
+<div id="moverlay" class="moverlay hidden" onclick="if(event.target===this)closeMod()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div id="mcontent"></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ═════════════════════════════════════
+//  STATE & CONFIG
+// ═════════════════════════════════════
+const API = window.location.origin + "/api";
+const S = {
+  user:  null,
+  token: localStorage.getItem("ch_tok"),
+  page:  "explore",
+  args:  [],
+};
+
+// ═════════════════════════════════════
+//  HTTP
+// ═════════════════════════════════════
+async function req(m, path, body) {
+  const o = { method: m, headers: { "Content-Type": "application/json" } };
+  if (S.token) o.headers.Authorization = "Bearer " + S.token;
+  if (body)    o.body = JSON.stringify(body);
+  const r = await fetch(API + path, o);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
+  return d;
+}
+
+// ═════════════════════════════════════
+//  ROUTING
+// ═════════════════════════════════════
+function gp(page, ...args) { S.page = page; S.args = args; window.scrollTo(0, 0); render(); }
+
+function sw(tab) {
+  document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+  const el = document.getElementById("t-" + tab);
+  if (el) el.classList.add("active");
+  gp(tab);
+}
+
+async function render() {
+  try {
+    const p = S.page;
+    if      (p === "feed")          await rFeed();
+    else if (p === "explore")       await rExplore();
+    else if (p === "people")        await rPeople();
+    else if (p === "profile")       await rProfile(S.args[0]);
+    else if (p === "post")          await rPost(S.args[0]);
+    else if (p === "notifications") await rNotifs();
+    else if (p === "saved")         await rSaved();
+    else                            await rExplore();
+  } catch(e) {
+    sa(`<div class="loader">❌ ${e.message}<br><small style="color:var(--mt)">Backend running? → <strong>python app.py</strong> on port 5002</small></div>`);
+  }
+}
+
+// ═════════════════════════════════════
+//  NAVBAR
+// ═════════════════════════════════════
+function unav() {
+  const el = ge("nav-user");
+  if (S.user) {
+    el.innerHTML = `
+      <div class="flex-ic" style="display:flex;align-items:center;gap:7px;cursor:pointer" onclick="gp('profile','${S.user.username}')">
+        <div class="av" style="width:32px;height:32px;font-size:13px">${S.user.name[0].toUpperCase()}</div>
+        <span style="font-size:13px;font-weight:600;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${S.user.name.split(" ")[0]}</span>
+      </div>
+      <button class="btn btn-gray btn-sm" onclick="logout()">Logout</button>`;
+  } else {
+    el.innerHTML = `<button class="btn btn-p btn-sm" onclick="openAuthMod('l')">Login / Sign Up</button>`;
+  }
+}
+
+// ═════════════════════════════════════
+//  AUTH
+// ═════════════════════════════════════
+async function autoLogin() {
+  if (!S.token) return;
+  try {
+    S.user = await req("GET", "/auth/me");
+    unav(); updateNdot();
+  } catch(_) { S.token = null; localStorage.removeItem("ch_tok"); }
+}
+
+function openAuthMod(tab = "l") {
+  openMod(`
+  <div class="mhead">
+    <h3>Welcome to ConnectHub 📱</h3>
+    <button class="mclose" onclick="closeMod()">✕</button>
+  </div>
+  <div class="mbody">
+    <div class="atabs">
+      <div class="atab active" id="at-l" onclick="swat('l')">Login</div>
+      <div class="atab" id="at-r" onclick="swat('r')">Sign Up</div>
+    </div>
+    <div id="aerr"></div>
+    <div id="lpan">
+      <div class="frow"><label>Email or Username</label><input class="inp" id="lem" placeholder="user@demo.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="frow"><label>Password</label><input class="inp" id="lpw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn btn-p btn-fw" id="lbtn" onclick="doLogin()">Login →</button>
+      <div style="background:var(--bg);border-radius:var(--rs);padding:11px;margin-top:11px;font-size:12px;color:var(--mt);line-height:2">
+        <strong style="color:var(--tx)">Demo accounts</strong><br>
+        user@demo.com · priya@demo.com · amit@demo.com<br>
+        All passwords: <strong style="color:var(--tx)">Demo@123</strong>
+      </div>
+    </div>
+    <div id="rpan" class="hidden">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="frow"><label>Full Name *</label><input class="inp" id="rnm" placeholder="Rahul Sharma"></div>
+        <div class="frow"><label>Username *</label><input class="inp" id="run" placeholder="rahulsharma" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_.]/g,'')"></div>
+      </div>
+      <div class="frow"><label>Email *</label><input class="inp" id="rem" type="email" placeholder="you@example.com"></div>
+      <div class="frow"><label>Password * (min 6)</label><input class="inp" id="rpw" type="password" placeholder="Create password"></div>
+      <button class="btn btn-p btn-fw" id="rbtn" onclick="doRegister()">Create Account →</button>
+    </div>
+  </div>`);
+}
+
+function swat(t) {
+  ge("lpan").classList.toggle("hidden", t !== "l");
+  ge("rpan").classList.toggle("hidden", t !== "r");
+  ge("at-l").classList.toggle("active", t === "l");
+  ge("at-r").classList.toggle("active", t !== "l");
+  ge("aerr").innerHTML = "";
+}
+
+async function doLogin() {
+  const em = vv("lem"), pw = vv("lpw");
+  if (!em || !pw) { aerr("Fill all fields"); return; }
+  const btn = ge("lbtn"); bl(btn, true);
+  try {
+    const d = await req("POST", "/auth/login", { email: em, password: pw });
+    onLogin(d);
+  } catch(e) { aerr(e.message); }
+  finally { bl(btn, false, "Login →"); }
+}
+
+async function doRegister() {
+  const name = vv("rnm"), uname = vv("run"), email = vv("rem"), pw = vv("rpw");
+  if (!name || !uname || !email || !pw) { aerr("Fill all fields"); return; }
+  const btn = ge("rbtn"); bl(btn, true);
+  try {
+    const d = await req("POST", "/auth/register", { name, username: uname, email, password: pw });
+    onLogin(d);
+  } catch(e) { aerr(e.message); }
+  finally { bl(btn, false, "Create Account →"); }
+}
+
+function onLogin(data) {
+  S.token = data.token; S.user = data.user;
+  localStorage.setItem("ch_tok", data.token);
+  closeMod(); unav(); updateNdot();
+  toast(`Welcome, ${data.user.name.split(" ")[0]}! 👋`, "success");
+  sw("feed");
+}
+
+function logout() {
+  S.token = null; S.user = null;
+  localStorage.removeItem("ch_tok");
+  unav(); sw("explore");
+  toast("Logged out", "info");
+}
+
+// ═════════════════════════════════════
+//  LEFT SIDEBAR
+// ═════════════════════════════════════
+function lsb() {
+  if (!S.user) return "<div></div>";
+  const links = [
+    ["feed",    "🏠", "Home"],
+    ["explore", "🔥", "Explore"],
+    ["people",  "👥", "People"],
+    ["profile_me", "👤", "My Profile"],
+    ["saved",   "🔖", "Saved Posts"],
+    ["notifications", "🔔", "Notifications"],
+  ];
+  return `<div class="lside">
+  <div class="scard">
+    <div class="suser" onclick="gp('profile','${S.user.username}')">
+      <div class="av" style="width:40px;height:40px;font-size:16px">${S.user.name[0].toUpperCase()}</div>
+      <div style="min-width:0">
+        <div style="font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${S.user.name}</div>
+        <div style="font-size:12px;color:var(--mt)">@${S.user.username}</div>
+      </div>
+    </div>
+    ${links.map(([pg, ic, lb]) => {
+      const target  = pg === "profile_me" ? S.user.username : "";
+      const pagekey = pg === "profile_me" ? "profile" : pg;
+      const active  = S.page === pagekey && (pagekey !== "profile" || S.args[0] === S.user.username);
+      return `<button class="nl ${active ? "active" : ""}" onclick="gp('${pagekey}','${target}')"><span style="font-size:16px;width:20px;text-align:center">${ic}</span>${lb}</button>`;
+    }).join("")}
+  </div></div>`;
+}
+
+// ═════════════════════════════════════
+//  RIGHT SIDEBAR
+// ═════════════════════════════════════
+function rsb(trending) {
+  const tags  = trending?.hashtags || [];
+  const users = (trending?.users  || []).filter(u => u.id !== S.user?.id);
+  return `<div class="rside">
+  ${tags.length ? `<div class="tcard">
+    <div class="ttitle">🔥 Trending</div>
+    ${tags.slice(0, 8).map(h => `
+    <div class="ti" onclick="stag('${h.tag}')">
+      <div class="htag">#${h.tag}</div>
+      <div class="tc">${h.post_count} posts</div>
+    </div>`).join("")}
+  </div>` : ""}
+  ${users.length ? `<div class="tcard">
+    <div class="ttitle">👥 Suggested</div>
+    ${users.slice(0, 5).map(u => `
+    <div class="sugitem">
+      <div class="av" style="width:34px;height:34px;font-size:13px" onclick="gp('profile','${u.username}')">${u.name[0].toUpperCase()}</div>
+      <div style="flex:1;min-width:0;cursor:pointer" onclick="gp('profile','${u.username}')">
+        <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.name}${u.is_verified ? ' <span class="vi">✓</span>' : ""}</div>
+        <div style="font-size:11px;color:var(--mt)">@${u.username}</div>
+      </div>
+      ${S.user ? `<button class="btn btn-p btn-sm" onclick="doFollow(${u.id},this)">Follow</button>` : ""}
+    </div>`).join("")}
+  </div>` : ""}
+  </div>`;
+}
+
+// ═════════════════════════════════════
+//  CREATE POST BOX
+// ═════════════════════════════════════
+function createBox() {
+  if (!S.user) return "";
+  return `<div class="cbox">
+  <div style="display:flex;gap:10px;align-items:flex-start">
+    <div class="av" style="width:38px;height:38px;font-size:15px;flex-shrink:0">${S.user.name[0].toUpperCase()}</div>
+    <div style="flex:1">
+      <textarea class="cinp" id="ctxt" rows="2" placeholder="What's on your mind, ${S.user.name.split(" ")[0]}?" onclick="expCreate()" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+      <div id="cimgpre"></div>
+      <div class="cbar hidden" id="cbar">
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="btn btn-gray btn-sm" onclick="togImg()">📷 Photo URL</button>
+          <input class="inp inp-bg" type="text" id="ciurl" placeholder="Paste image URL…" style="width:200px;font-size:12px;display:none" oninput="prevImg(this.value)">
+        </div>
+        <button class="btn btn-p btn-sm" id="cpbtn" onclick="doPost()">Post ↑</button>
+      </div>
+    </div>
+  </div>
+  </div>`;
+}
+
+function expCreate() { ge("cbar")?.classList.remove("hidden"); }
+function togImg() {
+  const i = ge("ciurl"); if (!i) return;
+  i.style.display = i.style.display === "none" ? "block" : "none";
+  if (i.style.display === "block") i.focus();
+}
+function prevImg(url) {
+  const w = ge("cimgpre"); if (!w) return;
+  if (url.trim()) {
+    w.innerHTML = `<div class="ipwrap"><img src="${url}" onerror="this.closest('.ipwrap').innerHTML='<p style=padding:8px;font-size:12px;color:var(--mt)>Invalid image URL</p>'"><button class="iprm" onclick="ge('ciurl').value='';ge('cimgpre').innerHTML=''">✕</button></div>`;
+  } else w.innerHTML = "";
+}
+
+async function doPost() {
+  const content = (ge("ctxt")?.value || "").trim();
+  const img     = (ge("ciurl")?.value || "").trim();
+  if (!content) { toast("Write something first!", "error"); return; }
+  if (!S.user)  { openAuthMod(); return; }
+  const btn = ge("cpbtn"); bl(btn, true);
+  try {
+    await req("POST", "/posts", { content, image_url: img });
+    ge("ctxt").value = "";
+    if (ge("ciurl")) ge("ciurl").value = "";
+    ge("cimgpre").innerHTML = "";
+    ge("cbar")?.classList.add("hidden");
+    toast("Posted! 🎉", "success");
+    render();
+  } catch(e) { toast(e.message, "error"); }
+  finally { bl(btn, false, "Post ↑"); }
+}
+
+// ═════════════════════════════════════
+//  POST CARD
+// ═════════════════════════════════════
+function pc(p) {
+  const body = (p.content || "").replace(/#(\w+)/g, '<span class="htag" onclick="stag(\'$1\')">#$1</span>');
+  const own  = S.user?.id == p.user_id;
+  const liked = !!p.is_liked, saved = !!p.is_saved;
+  return `<div class="pcard" id="pc-${p.id}">
+  <div class="ph">
+    <div class="av" style="width:40px;height:40px;font-size:16px" onclick="gp('profile','${p.username}')">${(p.name||"?")[0].toUpperCase()}</div>
+    <div class="pm">
+      <div class="pa" onclick="gp('profile','${p.username}')">${p.name}${p.is_verified ? ' <span class="vi">✓</span>' : ""}</div>
+      <div class="pt">@${p.username} · ${tsince(p.created_at)}</div>
+    </div>
+    ${own ? `<button style="background:none;border:none;cursor:pointer;color:var(--mt);font-size:17px;padding:2px" onclick="delPost(${p.id})">🗑</button>` : ""}
+  </div>
+  <div class="pb">${body}</div>
+  ${p.image_url ? `<img class="pimg" src="${p.image_url}" alt="post" onclick="gp('post',${p.id})" onerror="this.closest('.pcard').querySelector('.pimg').style.display='none'">` : ""}
+  <div class="pst">
+    <span id="lc-${p.id}">${p.like_count || 0} ${p.like_count === 1 ? "like" : "likes"}</span>
+    <span class="psl" onclick="gp('post',${p.id})">${p.comment_count || 0} ${p.comment_count === 1 ? "comment" : "comments"}</span>
+  </div>
+  <div class="pax">
+    <button class="pab ${liked ? "liked" : ""}" id="lb-${p.id}" onclick="doLike(${p.id},this)">${liked ? "❤️" : "🤍"} Like</button>
+    <button class="pab" onclick="gp('post',${p.id})">💬 Comment</button>
+    <button class="pab ${saved ? "saved" : ""}" id="sb-${p.id}" onclick="doSave(${p.id},this)">🔖 ${saved ? "Saved" : "Save"}</button>
+  </div>
+  </div>`;
+}
+
+// ═════════════════════════════════════
+//  PAGES
+// ═════════════════════════════════════
+async function rFeed() {
+  if (!S.user) { sw("explore"); return; }
+  const [posts, tr] = await Promise.all([req("GET", "/feed"), req("GET", "/trending")]);
+  sa(`<div class="layout">
+    ${lsb()}
+    <div>
+      ${createBox()}
+      ${posts.length
+        ? posts.map(p => pc(p)).join("")
+        : `<div style="background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:40px;text-align:center;color:var(--mt)">
+            <div style="font-size:48px;margin-bottom:12px">👥</div>
+            <div style="font-weight:700;font-size:16px;margin-bottom:8px">Your feed is empty</div>
+            <p style="font-size:14px">Follow people to see their posts here</p>
+            <button class="btn btn-p" style="margin-top:14px" onclick="sw('people')">Find People →</button>
+           </div>`}
+    </div>
+    ${rsb(tr)}
+  </div>`);
+}
+
+async function rExplore() {
+  const [posts, tr] = await Promise.all([req("GET", "/explore"), req("GET", "/trending")]);
+  sa(`<div class="layout">
+    ${lsb()}
+    <div>
+      ${createBox()}
+      ${posts.map(p => pc(p)).join("")}
+    </div>
+    ${rsb(tr)}
+  </div>`);
+}
+
+async function rPeople() {
+  const [people, tr] = await Promise.all([req("GET", "/people"), req("GET", "/trending")]);
+  sa(`<div class="layout">
+    ${lsb()}
+    <div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:14px">👥 People to Follow</div>
+      <div class="people-grid">
+        ${people.map(u => `
+        <div class="pple-card" onclick="gp('profile','${u.username}')">
+          <div class="av" style="width:56px;height:56px;font-size:22px;margin:0 auto 10px">${u.name[0].toUpperCase()}</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:2px">${u.name}${u.is_verified ? ' <span class="vi">✓</span>' : ""}</div>
+          <div style="font-size:12px;color:var(--mt);margin-bottom:8px">@${u.username}</div>
+          <div style="font-size:12px;color:var(--mt);margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${u.bio || "No bio yet"}</div>
+          <div style="font-size:12px;color:var(--mt);margin-bottom:10px">${u.follower_count} followers</div>
+          ${S.user && S.user.id !== u.id ? `<button class="btn ${u.is_following ? "btn-gray" : "btn-p"} btn-sm btn-fw" onclick="event.stopPropagation();doFollow(${u.id},this)">${u.is_following ? "Following" : "Follow"}</button>` : ""}
+        </div>`).join("")}
+      </div>
+    </div>
+    ${rsb(tr)}
+  </div>`);
+}
+
+async function rPost(pid) {
+  const [data, tr] = await Promise.all([req("GET", `/posts/${pid}`), req("GET", "/trending")]);
+  const p = data.post, comments = data.comments;
+  sa(`<div class="layout">
+    ${lsb()}
+    <div>
+      <button class="btn btn-gray btn-sm" style="margin-bottom:12px" onclick="history.back()">← Back</button>
+      ${pc(p)}
+      <div style="background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:15px">
+        <div style="font-size:15px;font-weight:700;margin-bottom:13px">Comments (${p.comment_count || 0})</div>
+        ${S.user ? `<div style="display:flex;gap:8px;margin-bottom:14px;align-items:flex-start">
+          <div class="av" style="width:33px;height:33px;font-size:13px;flex-shrink:0">${S.user.name[0].toUpperCase()}</div>
+          <div style="flex:1">
+            <textarea class="inp" id="cinp" rows="2" placeholder="Write a comment…" style="margin-bottom:6px"></textarea>
+            <button class="btn btn-p btn-sm" onclick="doCmt(${p.id})">Comment</button>
+          </div>
+        </div>` : `<p style="font-size:13px;color:var(--mt);margin-bottom:14px"><span onclick="openAuthMod()" style="color:var(--p);cursor:pointer;font-weight:600">Login</span> to comment</p>`}
+        <div id="cmts">
+          ${comments.length
+            ? comments.map(c => cmtRow(c, p.id)).join("")
+            : `<div class="empty" style="padding:20px"><p style="font-size:14px">No comments yet — be first!</p></div>`}
+        </div>
+      </div>
+    </div>
+    ${rsb(tr)}
+  </div>`);
+}
+
+function cmtRow(c, pid) {
+  const own = S.user?.id == c.user_id;
+  return `<div class="cmrow" id="cr-${c.id}">
+    <div class="av" style="width:29px;height:29px;font-size:11px;flex-shrink:0" onclick="gp('profile','${c.username}')">${c.name[0].toUpperCase()}</div>
+    <div style="flex:1">
+      <div class="cmbub">
+        <div class="cmname">${c.name} <span style="color:var(--mt);font-weight:400">@${c.username}</span></div>
+        <div class="cmtxt">${esc(c.content)}</div>
+      </div>
+      <div class="cmmeta"><span>${tsince(c.created_at)}</span>${own ? `<span style="color:var(--rd)" onclick="delCmt(${c.id},${pid})">Delete</span>` : ""}</div>
+    </div>
+  </div>`;
+}
+
+async function rProfile(username) {
+  if (!username && S.user) username = S.user.username;
+  if (!username) { openAuthMod(); return; }
+  const [data, tr] = await Promise.all([req("GET", `/users/${username}`), req("GET", "/trending")]);
+  const u = data.user, posts = data.posts;
+  sa(`<div class="layout">
+    ${lsb()}
+    <div>
+      <div style="background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:visible;margin-bottom:14px">
+        <div class="pcov"></div>
+        <div style="position:relative;margin-bottom:12px">
+          <div class="pavwrap"><div class="av pavbig">${u.name[0].toUpperCase()}</div></div>
+          <div style="display:flex;justify-content:flex-end;padding:9px 15px 0">
+            ${u.is_me
+              ? `<button class="btn btn-gray btn-sm" onclick="openEditMod()">✏️ Edit Profile</button>`
+              : S.user ? `<button class="btn ${u.is_following ? "btn-gray" : "btn-p"} btn-sm" id="flbtn" onclick="doFollow(${u.id},this)">${u.is_following ? "Following" : "Follow"}</button>` : ""}
+          </div>
+        </div>
+        <div style="padding:8px 18px 16px">
+          <div style="font-size:20px;font-weight:800">${u.name}${u.is_verified ? ' <span class="vi">✓</span>' : ""}</div>
+          <div style="font-size:13px;color:var(--mt);margin-bottom:6px">@${u.username}</div>
+          ${u.bio      ? `<p style="font-size:14px;line-height:1.65;margin-bottom:7px">${u.bio}</p>` : ""}
+          ${u.location ? `<span style="font-size:13px;color:var(--mt)">📍 ${u.location}</span>` : ""}
+          ${u.website  ? `<a href="${u.website}" target="_blank" style="font-size:13px;color:var(--p);margin-left:${u.location?10:0}px">🔗 Website</a>` : ""}
+          <div style="display:flex;gap:20px;margin-top:11px">
+            <div style="cursor:pointer" onclick="showFol(${u.id},'followers')"><span style="font-size:17px;font-weight:800">${u.post_count}</span> <span style="font-size:13px;color:var(--mt)">Posts</span></div>
+            <div style="cursor:pointer" onclick="showFol(${u.id},'followers')"><span style="font-size:17px;font-weight:800">${u.follower_count}</span> <span style="font-size:13px;color:var(--mt)">Followers</span></div>
+            <div style="cursor:pointer" onclick="showFol(${u.id},'following')"><span style="font-size:17px;font-weight:800">${u.following_count}</span> <span style="font-size:13px;color:var(--mt)">Following</span></div>
+          </div>
+        </div>
+      </div>
+      ${posts.length
+        ? `<div class="pgrid" style="background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)">
+           ${posts.map(p => `
+           <div class="pgitem" onclick="gp('post',${p.id})">
+             ${p.image_url ? `<img class="pgimg" src="${p.image_url}" onerror="this.closest('.pgitem').innerHTML='<div class=pgtxt>${esc(p.content.slice(0,40))}</div>'">`
+             : `<div class="pgtxt">${esc(p.content.slice(0, 60))}</div>`}
+             <div class="pgo">❤️ ${p.like_count}  💬 ${p.comment_count}</div>
+           </div>`).join("")}
+           </div>`
+        : `<div class="empty" style="background:#fff;border-radius:var(--r);box-shadow:var(--sh)"><div style="font-size:42px;margin-bottom:10px">📸</div><p>No posts yet</p></div>`}
+    </div>
+    ${rsb(tr)}
+  </div>`);
+}
+
+function openEditMod() {
+  if (!S.user) return;
+  openMod(`
+  <div class="mhead"><h3>Edit Profile</h3><button class="mclose" onclick="closeMod()">✕</button></div>
+  <div class="mbody">
+    <div class="frow"><label>Name</label><input class="inp" id="en" value="${esc(S.user.name)}"></div>
+    <div class="frow"><label>Bio</label><textarea class="inp" id="eb" rows="3">${esc(S.user.bio || "")}</textarea></div>
+    <div class="frow"><label>Location</label><input class="inp" id="el" value="${esc(S.user.location || "")}" placeholder="Mumbai, India"></div>
+    <div class="frow"><label>Website</label><input class="inp" id="ew" value="${esc(S.user.website || "")}" placeholder="https://yoursite.com"></div>
+    <div id="eerr"></div>
+    <button class="btn btn-p btn-fw" id="ebtn" onclick="saveEdit()">Save Changes</button>
+  </div>`);
+}
+
+async function saveEdit() {
+  const btn = ge("ebtn"); bl(btn, true);
+  try {
+    const upd = await req("PUT", "/auth/update", { name: vv("en"), bio: vv("eb"), location: vv("el"), website: vv("ew") });
+    S.user = upd; unav(); closeMod();
+    toast("Profile updated! ✅", "success");
+    gp("profile", S.user.username);
+  } catch(e) { ge("eerr").innerHTML = `<div class="errbox">⚠️ ${e.message}</div>`; }
+  finally { bl(btn, false, "Save Changes"); }
+}
+
+async function rNotifs() {
+  if (!S.user) { openAuthMod(); return; }
+  const [ns, tr] = await Promise.all([req("GET", "/notifications"), req("GET", "/trending")]);
+  await req("PUT", "/notifications/read-all").catch(() => {});
+  ge("ndot")?.classList.add("hidden");
+  const icons = { like: "❤️", comment: "💬", follow: "👤", welcome: "🎉" };
+  sa(`<div class="layout">
+    ${lsb()}
+    <div>
+      <div style="background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:16px">
+        <div style="font-size:17px;font-weight:800;margin-bottom:14px">Notifications 🔔</div>
+        ${!ns.length
+          ? `<div class="empty"><div style="font-size:44px;margin-bottom:10px">🔔</div><p>No notifications yet</p></div>`
+          : ns.map(n => `
+          <div style="display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--bd);${!n.is_read ? "background:rgba(108,99,255,.03);border-radius:var(--rs);padding:11px" : ""}">
+            <div class="av" style="width:35px;height:35px;font-size:14px;flex-shrink:0;cursor:pointer" onclick="gp('profile','${n.actor_username}')">${n.actor_name[0].toUpperCase()}</div>
+            <div style="flex:1">
+              <p style="font-size:14px">${icons[n.type] || "🔔"} ${n.message}</p>
+              <p style="font-size:11px;color:var(--mt);margin-top:3px">${tsince(n.created_at)}</p>
+            </div>
+            ${!n.is_read ? `<div style="width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0;margin-top:6px"></div>` : ""}
+          </div>`).join("")}
+      </div>
+    </div>
+    ${rsb(tr)}
+  </div>`);
+}
+
+async function rSaved() {
+  if (!S.user) { openAuthMod(); return; }
+  const [posts, tr] = await Promise.all([req("GET", "/saved"), req("GET", "/trending")]);
+  sa(`<div class="layout">
+    ${lsb()}
+    <div>
+      <div style="font-size:17px;font-weight:800;margin-bottom:14px">🔖 Saved Posts</div>
+      ${!posts.length
+        ? `<div class="empty" style="background:#fff;border-radius:var(--r);box-shadow:var(--sh)"><div style="font-size:44px;margin-bottom:10px">🔖</div><p>Nothing saved yet</p></div>`
+        : posts.map(p => pc(p)).join("")}
+    </div>
+    ${rsb(tr)}
+  </div>`);
+}
+
+// ═════════════════════════════════════
+//  ACTIONS
+// ═════════════════════════════════════
+async function doLike(pid, btn) {
+  if (!S.user) { openAuthMod(); return; }
+  try {
+    const r = await req("POST", `/posts/${pid}/like`);
+    if (btn) { btn.classList.toggle("liked", r.liked); btn.innerHTML = `${r.liked ? "❤️" : "🤍"} Like`; }
+    const lc = ge(`lc-${pid}`);
+    if (lc) lc.textContent = `${r.like_count} ${r.like_count === 1 ? "like" : "likes"}`;
+  } catch(e) { toast(e.message, "error"); }
+}
+
+async function doSave(pid, btn) {
+  if (!S.user) { openAuthMod(); return; }
+  try {
+    const r = await req("POST", `/posts/${pid}/save`);
+    if (btn) { btn.classList.toggle("saved", r.saved); btn.innerHTML = `🔖 ${r.saved ? "Saved" : "Save"}`; }
+    toast(r.saved ? "Saved! 🔖" : "Removed from saved", "info");
+  } catch(e) { toast(e.message, "error"); }
+}
+
+async function doFollow(uid, btn) {
+  if (!S.user) { openAuthMod(); return; }
+  try {
+    const r = await req("POST", `/users/${uid}/follow`);
+    if (btn) { btn.className = `btn ${r.following ? "btn-gray" : "btn-p"} btn-sm${btn.className.includes("btn-fw") ? " btn-fw" : ""}`; btn.textContent = r.following ? "Following" : "Follow"; }
+    toast(r.following ? "Following! 👥" : "Unfollowed", "info");
+  } catch(e) { toast(e.message, "error"); }
+}
+
+async function delPost(pid) {
+  if (!confirm("Delete this post?")) return;
+  try { await req("DELETE", `/posts/${pid}`); toast("Post deleted", "info"); render(); }
+  catch(e) { toast(e.message, "error"); }
+}
+
+async function doCmt(pid) {
+  const text = (ge("cinp")?.value || "").trim();
+  if (!text) { toast("Write a comment first", "error"); return; }
+  try {
+    const c = await req("POST", `/posts/${pid}/comments`, { content: text });
+    ge("cinp").value = "";
+    const w = ge("cmts");
+    if (w) {
+      const empty = w.querySelector(".empty");
+      if (empty) empty.remove();
+      w.insertAdjacentHTML("afterbegin", cmtRow(c, pid));
+    }
+    const lc = document.querySelector(`#pc-${pid} .psl`);
+    if (lc) { const cc = parseInt(lc.textContent) + 1; lc.textContent = `${cc} ${cc === 1 ? "comment" : "comments"}`; }
+    toast("Comment added! 💬", "success");
+  } catch(e) { toast(e.message, "error"); }
+}
+
+async function delCmt(cid, pid) {
+  if (!confirm("Delete this comment?")) return;
+  try { await req("DELETE", `/comments/${cid}`); ge(`cr-${cid}`)?.remove(); toast("Deleted", "info"); }
+  catch(e) { toast(e.message, "error"); }
+}
+
+// ═════════════════════════════════════
+//  SEARCH
+// ═════════════════════════════════════
+let _st;
+async function hsearch() {
+  const q = ge("gi")?.value?.trim() || "";
+  clearTimeout(_st);
+  const dd = ge("sdrop"); if (!dd) return;
+  if (q.length < 2) { dd.classList.add("hidden"); return; }
+  _st = setTimeout(async () => {
+    try {
+      const d = await req("GET", `/search?q=${encodeURIComponent(q)}`);
+      if (!d.users.length && !d.posts.length) { dd.classList.add("hidden"); return; }
+      dd.innerHTML = [
+        ...d.users.map(u => `<div class="sitem" onclick="gp('profile','${u.username}');ge('sdrop').classList.add('hidden');ge('gi').value=''">
+          <div class="av" style="width:28px;height:28px;font-size:11px;flex-shrink:0">${u.name[0].toUpperCase()}</div>
+          <div><div style="font-size:13px;font-weight:700">${u.name}</div><div style="font-size:11px;color:var(--mt)">@${u.username} · ${u.follower_count} followers</div></div>
+        </div>`),
+        ...d.posts.map(p => `<div class="sitem" onclick="gp('post',${p.id});ge('sdrop').classList.add('hidden');ge('gi').value=''">
+          <span style="font-size:15px">📝</span><span style="font-size:13px">${esc(p.content.slice(0, 60))}…</span>
+        </div>`)
+      ].join("");
+      dd.classList.remove("hidden");
+    } catch(_) {}
+  }, 320);
+}
+document.addEventListener("click", e => { if (!e.target.closest(".nsearch")) ge("sdrop")?.classList.add("hidden"); });
+
+function stag(tag) { const i = ge("gi"); if (i) { i.value = "#" + tag; hsearch(); } }
+
+// ═════════════════════════════════════
+//  FOLLOWERS MODAL
+// ═════════════════════════════════════
+async function showFol(uid, type) {
+  try {
+    const rows = await req("GET", `/users/${uid}/${type}`);
+    openMod(`
+    <div class="mhead"><h3>${type === "followers" ? "Followers" : "Following"} (${rows.length})</h3><button class="mclose" onclick="closeMod()">✕</button></div>
+    <div style="padding:10px 17px">
+      ${!rows.length ? `<p style="text-align:center;color:var(--mt);padding:20px">No ${type} yet</p>` : rows.map(u => `
+      <div class="sugitem">
+        <div class="av" style="width:36px;height:36px;font-size:14px;cursor:pointer" onclick="closeMod();gp('profile','${u.username}')">${u.name[0].toUpperCase()}</div>
+        <div style="flex:1;min-width:0;cursor:pointer" onclick="closeMod();gp('profile','${u.username}')">
+          <div style="font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.name}${u.is_verified ? ' <span class="vi">✓</span>' : ""}</div>
+          <div style="font-size:12px;color:var(--mt)">@${u.username}</div>
+        </div>
+        ${S.user && S.user.id !== u.id ? `<button class="btn ${u.is_following ? "btn-gray" : "btn-p"} btn-sm" onclick="doFollow(${u.id},this)">${u.is_following ? "Following" : "Follow"}</button>` : ""}
+      </div>`).join("")}
+    </div>`);
+  } catch(e) { toast(e.message, "error"); }
+}
+
+// ═════════════════════════════════════
+//  NOTIF DOT
+// ═════════════════════════════════════
+async function updateNdot() {
+  if (!S.user || !S.token) return;
+  try {
+    const u = await req("GET", "/auth/me"); S.user = u;
+    const d = ge("ndot"); if (d) d.classList.toggle("hidden", (u.unread_notifications || 0) === 0);
+  } catch(_) {}
+}
+
+// ═════════════════════════════════════
+//  MODAL
+// ═════════════════════════════════════
+function openMod(html) { ge("mcontent").innerHTML = html; ge("moverlay").classList.remove("hidden"); }
+function closeMod()     { ge("moverlay").classList.add("hidden"); }
+
+// ═════════════════════════════════════
+//  HELPERS
+// ═════════════════════════════════════
+const ge  = id => document.getElementById(id);
+const vv  = id => (ge(id)?.value || "").trim();
+const sa  = html => { const a = ge("app"); if (a) a.innerHTML = html; };
+const esc = t => String(t || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+function toast(msg, type = "info") {
+  const t = ge("toast");
+  t.textContent = msg; t.className = `show ${type}`;
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => { t.className = ""; }, 3000);
+}
+function aerr(msg) { const e = ge("aerr"); if (e) e.innerHTML = msg ? `<div class="errbox">⚠️ ${msg}</div>` : ""; }
+function bl(btn, on, text = "") { if (!btn) return; btn.disabled = on; if (on) btn.innerHTML = `<div class="spin"></div>`; else if (text) btn.innerHTML = text; }
+
+function tsince(ts) {
+  if (!ts) return "";
+  try {
+    const s = ts.includes("T") ? ts + (ts.endsWith("Z") ? "" : "Z") : ts.replace(" ", "T") + "Z";
+    const diff = (Date.now() - new Date(s).getTime()) / 1000;
+    if (diff < 60)     return "just now";
+    if (diff < 3600)   return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400)  return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+    return new Date(s).toLocaleDateString("en-IN");
+  } catch(_) { return ts; }
+}
+
+// ═════════════════════════════════════
+//  INIT
+// ═════════════════════════════════════
+(async () => {
+  unav();
+  await autoLogin();
+  if (S.user) sw("feed"); else sw("explore");
+  setInterval(updateNdot, 30000);
+})();
+</script>
+</body>
+</html>
